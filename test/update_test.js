@@ -20,7 +20,7 @@ describe('Updating user in database', () => {
    let user;
 
    beforeEach((done) => {
-     user = new User({name: 'Sai'});
+     user = new User({name: 'Sai', postCount: 0});
      user.save(() => {
        done();
      })
@@ -46,6 +46,17 @@ describe('Updating user in database', () => {
 
    it('Modal Class findByIdAndUpdate', (done) => {
      assertNameChange(User.findByIdAndUpdate(user._id, {name: 'Sai Prudhvi'}), done);
+   });
+
+   it('MongoDB Update Operator', (done) => {
+     User.update({name: 'Sai'}, {$inc : {postCount: 1}})
+         .then(() => {
+           User.find({name: 'Sai'})
+               .then((user) => {
+                    assert(user[0].postCount === 1);
+                    done();
+               })
+         })
    });
 
 })
