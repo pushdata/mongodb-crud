@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const PostSchema =  require('./post');
 
 const UserSchema = new Schema(
   {name: {
@@ -10,7 +11,14 @@ const UserSchema = new Schema(
       message: 'Name should be greater than 2 characters'
     }
   },
-  postCount: Number});
+  likes: Number,
+  posts: [PostSchema]
+}
+);
+
+UserSchema.virtual('postCount').get(function() {
+  return this.posts.length;
+});
 
 const User = mongoose.model('user', UserSchema);
 

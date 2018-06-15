@@ -20,7 +20,7 @@ describe('Updating user in database', () => {
    let user;
 
    beforeEach((done) => {
-     user = new User({name: 'Sai', postCount: 0});
+     user = new User({name: 'Sai', likes: 0});
      user.save(() => {
        done();
      })
@@ -49,11 +49,11 @@ describe('Updating user in database', () => {
    });
 
    it('MongoDB Update Operator', (done) => {
-     User.update({name: 'Sai'}, {$inc : {postCount: 1}})
+     User.update({name: 'Sai'}, {$inc : {likes: 1}})
          .then(() => {
            User.find({name: 'Sai'})
                .then((user) => {
-                    assert(user[0].postCount === 1);
+                    assert(user[0].likes === 1);
                     done();
                })
          })
