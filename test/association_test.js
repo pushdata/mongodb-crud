@@ -22,14 +22,40 @@ describe('Test association among collections', () => {
         });
   });
 
-  it.only('Checks the association between user & blogpost collection', (done) => {
+  it('Checks the association between user & blogpost collection', (done) => {
     User.findOne({name: 'Sai'})
         .then((user) => {
-          console.log(user);
           done();
         })
   });
 
+  it('Loading nested association - Depth 1 ', (done) => {
+    User.findOne({name: 'Sai'})
+        .populate('blogPosts')
+        .then((user) => {
+          assert(user.blogPosts[0].title === 'Angular tutorial');
+          done();
+        });
+  });
 
+  it('Loading deeply nested association - Max Depth', (done) => {
+    User.findOne({name: 'Sai'})
+        .populate({
+          path: 'blogPosts',
+          populate: {
+            path: 'comments',
+            model: 'comment',
+            populate: {
+              path: 'user',
+              model: 'user'
+            }
+          }
+        })
+        .then((userPosts) => {
+          assert(userPosts.blogPosts[0].comments[0].user.name === 'Sai');
+          // console.log(JSON.stringify(userPosts, null, 2));
+          done();
+        })
+  })
 
 });
